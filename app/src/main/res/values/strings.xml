@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Snap Share</string>
+    <string name="content_desc_up_navigate">Go to back screen.</string>
+    <string name="app_bar_title">Snap Share</string>
+</resources>
