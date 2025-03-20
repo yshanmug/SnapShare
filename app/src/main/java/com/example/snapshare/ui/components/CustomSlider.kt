@@ -1,5 +1,6 @@
 package com.example.snapshare.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -110,6 +111,7 @@ fun CustomSlider(
                     .background(if (selectedOption == Mode.ADVERTISE) greenColor else Color.Transparent)
                     .clickable {
                         onOptionSelected(Mode.ADVERTISE)
+//                        Log.d("is button clicked", "null")
                     },
                 contentAlignment = Alignment.Center
             ) {

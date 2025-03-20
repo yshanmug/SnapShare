@@ -11,7 +11,7 @@ sealed interface EventAction {
     data class OnConnectionReceivedRequestAccept(val deviceConnectionInfo: DeviceConnectionInfo) : EventAction
     data class OnConnectionReceivedRequestReject(val deviceConnectionInfo: DeviceConnectionInfo) : EventAction
     data class SendConnectionRequest(val deviceConnectionInfo: DeviceConnectionInfo) : EventAction
-    data class OnOpenCameraButtonClicked(val event: Event) : EventAction
+    data  class OnOpenCameraButtonClicked(val event: Event) : EventAction
     data class OnCapturedImage(val capturedUri: Uri) : EventAction
     data class FetchImages(val eventTitle: String) : EventAction
     data class SendImage(val imageUri: Uri) : EventAction
@@ -23,3 +23,10 @@ enum class Mode {
     OFF,
     ADVERTISE
 }
+
+
+// Hide dialog when user clicks outside of the dialos
+//show dialog when user click "create event"
+//When create button is clicked, the "event" should be created
+//set the event title when create button clicked
+//save ev ent

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -83,7 +82,8 @@ fun HomeScreen(
     onEventAction: (EventAction) -> Unit,
     onEventClicked: () -> Unit,
     onOpenCameraButtonClicked: () -> Unit
-) {
+)
+{
     val showSheet = remember { MutableTransitionState(initialState = false) }
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     Surface {
@@ -161,22 +161,14 @@ fun HomeScreen(
                     dragHandle = { BottomSheetDefaults.DragHandle() },
                     shape = RoundedCornerShape(15.dp),
                 ) {
-
                     DiscoveryScreen(
                         state = state,
                         onEventAction = onEventAction,
                         onDismiss = { showSheet.targetState = false }
                     )
-
                 }
-
-
             }
-
-
         }
-
-
     }
 }
 
@@ -214,6 +206,7 @@ fun AddItemToList(
                     selectedOption = state.currentMode,
                     onOptionSelected = { option ->
                         onEventAction(EventAction.OnModeChange(option))
+//                        Log.d("is button clicked", "null")
                     }
                 )
 

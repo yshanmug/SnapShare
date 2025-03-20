@@ -1,13 +1,15 @@
 package com.example.snapshare.viewmodel
-
-
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.runtime.mutableStateListOf
+import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,7 +54,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
-
 
 @HiltViewModel
 class SnapShareViewModel @Inject constructor(
@@ -101,6 +102,7 @@ class SnapShareViewModel @Inject constructor(
     fun onEventAction(eventAction: EventAction) {
         when (eventAction) {
             EventAction.HideDialog -> {
+//                _state.value = _state.value.copy(isAddingEvent = false)
                 _state.update {
                     it.copy(
                         isAddingEvent = false
@@ -210,6 +212,8 @@ class SnapShareViewModel @Inject constructor(
                 _state.update { it.copy(currentMode = eventAction.currentMode) }
                 when (eventAction.currentMode) {
                     Mode.ADVERTISE -> {
+                        val isPermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES) == PackageManager.PERMISSION_GRANTED
+                        Log.d("isPermissionGranted", isPermissionGranted.toString())
                         stopDiscover()
                         startAdvertising()
                     }
@@ -451,7 +455,7 @@ class SnapShareViewModel @Inject constructor(
         connectionsClient.stopAllEndpoints()
     }
 
-    private fun startDiscover() {
+private fun startDiscover() {
         val discoveryOptions = DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
         CoroutineScope(Dispatchers.IO).launch {
             val emptyDeviceInfoList: MutableList<DeviceConnectionInfo> = mutableListOf()
@@ -475,6 +479,7 @@ class SnapShareViewModel @Inject constructor(
                         }
                         _deviceInfoList.value = currentDeviceInfoList
                     }
+                    Log.d("Advertise Block Execute", "null")
                 }
 
                 override fun onEndpointLost(endPointId: String) {
@@ -575,6 +580,7 @@ class SnapShareViewModel @Inject constructor(
         permission: String,
         isGranted: Boolean
     ) {
+        Log.d("WhichPermission", permission.toString())
         if (!isGranted && !visiblePermissionDialogQueue.contains(permission)) {
             visiblePermissionDialogQueue.add(permission)
         }
