@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -19,6 +20,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
@@ -111,32 +116,37 @@ class MainActivity : ComponentActivity() {
                 )
                 Box(Modifier.fillMaxSize()) {
                     val activity = LocalContext.current as Activity
-                    val localContext = LocalContext.current
+                    var isAllPermissionGranted by remember { mutableStateOf(false) }
                     val dialogQueue = snapShareViewModel.visiblePermissionDialogQueue
                     val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.RequestMultiplePermissions(),
                         onResult = { perms ->
-                            var isLocationPermissionGranted = false
                             permissionsToRequest.forEach { permission ->
                                 snapShareViewModel.onPermissionResult(
                                     permission = permission,
                                     isGranted = perms[permission] == true
                                 )
-                                if ((permission == Manifest.permission.ACCESS_FINE_LOCATION ||
-                                    permission == Manifest.permission.ACCESS_COARSE_LOCATION) &&
-                                    perms[permission] == true) {
-                                    isLocationPermissionGranted = true
-                                }
                             }
-                            if(isLocationPermissionGranted){
-                                checkAndEnableGPS(activity)
-                            }
+                            Log.d("Permissione", perms.toString())
+                            isAllPermissionGranted =
+                                permissionsToRequest.all { perms[it] == true } && isStoragePermissionGranted()
+                            Log.d("isAllPermissionGrated", isAllPermissionGranted.toString())
                         }
                     )
+
                     LaunchedEffect(key1 = "PermissionHandler") {
                         delay(2000)
                         multiplePermissionResultLauncher.launch(permissionsToRequest)
                     }
+
+
+                    if (isStoragePermissionGranted()) {
+                        LaunchedEffect(key1 = "GPS handler") {
+                            delay(2000)
+                            checkAndEnableGPS(activity)
+                        }
+                    }
+
                     dialogQueue
                         .reversed()
                         .forEach { permission ->
@@ -154,6 +164,8 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onGoToAppSettingsClick = { askPermissionStorage() }
                                 )
+//                                Log.d("IsStorageGRanted", )
+
                             }
 
                             PermissionDialog(
@@ -238,7 +250,6 @@ class MainActivity : ComponentActivity() {
     }
 
 
-
     private fun checkAndEnableGPS(activity: Activity) {
         val locationRequest =
             LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).apply {
@@ -256,7 +267,7 @@ class MainActivity : ComponentActivity() {
 
         task.addOnSuccessListener {
             Toast.makeText(
-               activity,
+                activity,
                 "Location settings are satisfied",
                 Toast.LENGTH_SHORT
             ).show()
