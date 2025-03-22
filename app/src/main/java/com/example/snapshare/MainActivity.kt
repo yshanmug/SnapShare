@@ -104,7 +104,6 @@ class MainActivity : ComponentActivity() {
 
                 )
         }
-
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +115,7 @@ class MainActivity : ComponentActivity() {
                 )
                 Box(Modifier.fillMaxSize()) {
                     val activity = LocalContext.current as Activity
-                    var isAllPermissionGranted by remember { mutableStateOf(false) }
+                    var isAllPermissionGranted by remember {mutableStateOf(false)}
                     val dialogQueue = snapShareViewModel.visiblePermissionDialogQueue
                     val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -127,9 +126,8 @@ class MainActivity : ComponentActivity() {
                                     isGranted = perms[permission] == true
                                 )
                             }
-                            Log.d("Permissione", perms.toString())
-                            isAllPermissionGranted =
-                                permissionsToRequest.all { perms[it] == true } && isStoragePermissionGranted()
+                            Log.d("Permissione", perms.toString() )
+                            isAllPermissionGranted = permissionsToRequest.all { perms[it] == true } && isStoragePermissionGranted()
                             Log.d("isAllPermissionGrated", isAllPermissionGranted.toString())
                         }
                     )
@@ -140,11 +138,11 @@ class MainActivity : ComponentActivity() {
                     }
 
 
-                    if (isStoragePermissionGranted()) {
-                        LaunchedEffect(key1 = "GPS handler") {
-                            delay(2000)
-                            checkAndEnableGPS(activity)
-                        }
+                    if(isStoragePermissionGranted()){
+                    LaunchedEffect(key1 = "GPS handler") {
+                        delay(2000)
+                        checkAndEnableGPS(activity)
+                    }
                     }
 
                     dialogQueue
@@ -250,6 +248,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+
     private fun checkAndEnableGPS(activity: Activity) {
         val locationRequest =
             LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).apply {
@@ -267,7 +266,7 @@ class MainActivity : ComponentActivity() {
 
         task.addOnSuccessListener {
             Toast.makeText(
-                activity,
+               activity,
                 "Location settings are satisfied",
                 Toast.LENGTH_SHORT
             ).show()

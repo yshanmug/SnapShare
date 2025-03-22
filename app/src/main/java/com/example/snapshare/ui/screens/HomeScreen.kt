@@ -59,16 +59,15 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.snapshare.R
 import com.example.snapshare.data.ConnectionStatus
+import com.example.snapshare.data.Event
 import com.example.snapshare.data.EventAction
 import com.example.snapshare.data.Mode
-import com.example.snapshare.data.Event
 import com.example.snapshare.model.EventState
 import com.example.snapshare.ui.components.AddEventDialog
 import com.example.snapshare.ui.components.ConnectionRequestReceivedDialog
 import com.example.snapshare.ui.components.CustomSlider
 import com.example.snapshare.ui.components.FabButton
 import com.example.snapshare.ui.theme.colorPrimaryDark
-
 import com.example.snapshare.viewmodel.SnapShareViewModel
 import java.util.Locale
 
@@ -81,9 +80,8 @@ fun HomeScreen(
     snapShareViewModel: SnapShareViewModel,
     onEventAction: (EventAction) -> Unit,
     onEventClicked: () -> Unit,
-    onOpenCameraButtonClicked: () -> Unit
-)
-{
+    onOpenCameraButtonClicked: () -> Unit,
+) {
     val showSheet = remember { MutableTransitionState(initialState = false) }
     val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     Surface {
@@ -180,7 +178,7 @@ fun AddItemToList(
     snapShareViewModel: SnapShareViewModel,
     onEventAction: (EventAction) -> Unit,
     onEventClicked: () -> Unit,
-    onOpenCameraButtonClicked: () -> Unit
+    onOpenCameraButtonClicked: () -> Unit,
 ) {
     val eventList = remember { mutableStateListOf<Event>() }
 
@@ -258,7 +256,7 @@ fun EventListBody(
     snapShareViewModel: SnapShareViewModel,
     onEventAction: (EventAction) -> Unit,
     onEventClicked: () -> Unit,
-    onOpenCameraButtonClicked: () -> Unit
+    onOpenCameraButtonClicked: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
 

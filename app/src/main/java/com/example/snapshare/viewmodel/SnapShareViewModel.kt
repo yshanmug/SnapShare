@@ -1,6 +1,6 @@
 package com.example.snapshare.viewmodel
+
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -14,14 +14,14 @@ import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.snapshare.SnapShareApplication
+import com.example.snapshare.constants.SnapShareConstants
 import com.example.snapshare.data.ConnectionStatus
 import com.example.snapshare.data.DeviceConnectionInfo
-import com.example.snapshare.data.EventAction
-import com.example.snapshare.repository.EventRepository
-import com.example.snapshare.data.Mode
-import com.example.snapshare.constants.SnapShareConstants
 import com.example.snapshare.data.Event
+import com.example.snapshare.data.EventAction
+import com.example.snapshare.data.Mode
 import com.example.snapshare.model.EventState
+import com.example.snapshare.repository.EventRepository
 import com.example.snapshare.utils.MediaUtils
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.AdvertisingOptions
@@ -58,7 +58,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SnapShareViewModel @Inject constructor(
     private val eventRepository: EventRepository,
-    private val context: Context
+    private val context: Context,
 ) :
     ViewModel() {
     private val _state = MutableStateFlow(EventState())
@@ -212,7 +212,10 @@ class SnapShareViewModel @Inject constructor(
                 _state.update { it.copy(currentMode = eventAction.currentMode) }
                 when (eventAction.currentMode) {
                     Mode.ADVERTISE -> {
-                        val isPermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES) == PackageManager.PERMISSION_GRANTED
+                        val isPermissionGranted = ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.NEARBY_WIFI_DEVICES
+                        ) == PackageManager.PERMISSION_GRANTED
                         Log.d("isPermissionGranted", isPermissionGranted.toString())
                         stopDiscover()
                         startAdvertising()
@@ -257,7 +260,7 @@ class SnapShareViewModel @Inject constructor(
     fun processPayloadAndSaveImage(
         imagePayload: Payload,
         textPayload: Payload,
-        endPointId: String
+        endPointId: String,
     ) {
         val text = textPayload.asBytes()?.toString(Charsets.UTF_8)
         val imageUri = imagePayload.asFile()?.asUri()
@@ -455,7 +458,7 @@ class SnapShareViewModel @Inject constructor(
         connectionsClient.stopAllEndpoints()
     }
 
-private fun startDiscover() {
+    private fun startDiscover() {
         val discoveryOptions = DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
         CoroutineScope(Dispatchers.IO).launch {
             val emptyDeviceInfoList: MutableList<DeviceConnectionInfo> = mutableListOf()
@@ -576,11 +579,11 @@ private fun startDiscover() {
     fun dismissDialog() {
         visiblePermissionDialogQueue.removeFirst()
     }
+
     fun onPermissionResult(
         permission: String,
-        isGranted: Boolean
+        isGranted: Boolean,
     ) {
-        Log.d("WhichPermission", permission.toString())
         if (!isGranted && !visiblePermissionDialogQueue.contains(permission)) {
             visiblePermissionDialogQueue.add(permission)
         }

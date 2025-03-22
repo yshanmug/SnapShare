@@ -1,11 +1,7 @@
 package com.example.snapshare
 
 import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
-import android.util.Log
 import androidx.camera.lifecycle.ProcessCameraProvider
 import com.example.snapshare.utils.MediaUtils.getCameraProvider
 import dagger.hilt.android.HiltAndroidApp
@@ -31,13 +27,16 @@ class SnapShareApplication : Application() {
             cameraProvider = getCameraProvider(applicationContext)
         }
     }
+
     override fun onTerminate() {
         super.onTerminate()
         cameraExecutor.shutdown()
     }
+
     fun getCameraExecutor(): ExecutorService? {
         return cameraExecutor
     }
+
     fun getCameraProvider(): ProcessCameraProvider? {
         return cameraProvider
     }

@@ -23,10 +23,3 @@ enum class Mode {
     OFF,
     ADVERTISE
 }
-
-
-// Hide dialog when user clicks outside of the dialos
-//show dialog when user click "create event"
-//When create button is clicked, the "event" should be created
-//set the event title when create button clicked
-//save ev ent

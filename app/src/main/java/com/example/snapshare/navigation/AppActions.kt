@@ -1,6 +1,5 @@
 package com.example.snapshare.navigation
 
-import android.util.Log
 import androidx.navigation.NavHostController
 
 

@@ -1,6 +1,5 @@
 package com.example.snapshare.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,13 +12,12 @@ import com.example.snapshare.ui.screens.CameraView
 import com.example.snapshare.ui.screens.EventScreen
 import com.example.snapshare.ui.screens.HomeScreen
 import com.example.snapshare.ui.screens.SplashScreen
-
 import com.example.snapshare.viewmodel.SnapShareViewModel
 
 @Composable
 fun AppNavigation(
     startDestination: String = AppDestinations.SPLASH_SCREEN_DESTINATION,
-    snapShareViewModel: SnapShareViewModel
+    snapShareViewModel: SnapShareViewModel,
 ) {
     val navController = rememberNavController()
     val destinations = AppDestinations
@@ -38,7 +36,7 @@ fun AppNavigation(
 private fun NavGraphBuilder.setDestination(
     destinations: AppDestinations,
     snapShareViewModel: SnapShareViewModel,
-    actions: AppActions
+    actions: AppActions,
 ) {
 
     composable(destinations.SPLASH_SCREEN_DESTINATION)
@@ -49,25 +47,32 @@ private fun NavGraphBuilder.setDestination(
         destinations.EVENT_HOME_DESTINATION
     ) {
         val state by snapShareViewModel.state.collectAsState()
-        HomeScreen(state = state, snapShareViewModel = snapShareViewModel, onEventAction = snapShareViewModel::onEventAction, onEventClicked = actions.onEventClicked, onOpenCameraButtonClicked = actions.onOpenCameraButtonClicked)
+        HomeScreen(
+            state = state,
+            snapShareViewModel = snapShareViewModel,
+            onEventAction = snapShareViewModel::onEventAction,
+            onEventClicked = actions.onEventClicked,
+            onOpenCameraButtonClicked = actions.onOpenCameraButtonClicked
+        )
     }
     composable(
         destinations.EVENT_DETAIL_DESTINATION
     ) {
         val state by snapShareViewModel.state.collectAsState()
-        EventScreen(state = state,navigateUp = actions.navigateUp)
+        EventScreen(state = state, navigateUp = actions.navigateUp)
     }
     composable(
         destinations.OPEN_CAMERA_DESTINATION
     ) {
         val state by snapShareViewModel.state.collectAsState()
-        if(snapShareViewModel.getCameraExecutor()!=null && snapShareViewModel.getCameraProvider()!=null) {
+        if (snapShareViewModel.getCameraExecutor() != null && snapShareViewModel.getCameraProvider() != null) {
             CameraView(
                 outputDirectory = snapShareViewModel.getExternalImageDirectoryFile(),
                 executor = snapShareViewModel.getCameraExecutor()!!,
                 cameraProvider = snapShareViewModel.getCameraProvider()!!,
                 state = state,
-                onEventAction = snapShareViewModel::onEventAction)
+                onEventAction = snapShareViewModel::onEventAction
+            )
         }
     }
 

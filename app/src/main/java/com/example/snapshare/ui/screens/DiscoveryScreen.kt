@@ -1,7 +1,5 @@
 package com.example.snapshare.ui.screens
 
-import android.content.res.Resources
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -23,21 +21,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -57,7 +49,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -70,13 +61,14 @@ import com.example.snapshare.ui.theme.greenColor
 import com.example.snapshare.ui.theme.redColor
 import com.example.snapshare.utils.MediaUtils
 import kotlin.math.roundToInt
-import kotlin.random.Random
 
 @Composable
-fun DiscoveryScreen(state: EventState,
-                    onEventAction: (EventAction) -> Unit,
-                    onDismiss: () -> Unit) {
-    Surface{
+fun DiscoveryScreen(
+    state: EventState,
+    onEventAction: (EventAction) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Surface {
         Scaffold(
         ) { it ->
             BoxWithConstraints(
@@ -106,11 +98,10 @@ fun DiscoveryScreen(state: EventState,
                         val circleRadius = radius + (i - 1) * 50f
                         val normalizedRadius = (circleRadius - radius) / (numCircles * 25f - radius)
                         var colorValue = (255f * (1f - normalizedRadius)).toInt()
-                        if(colorValue<0)
-                        {
+                        if (colorValue < 0) {
                             colorValue = 0
                         }
-                        val color = Color(255-colorValue, 255-colorValue, 255-colorValue)
+                        val color = Color(255 - colorValue, 255 - colorValue, 255 - colorValue)
                         drawCircle(
                             color = color,
                             radius = circleRadius,
@@ -120,30 +111,40 @@ fun DiscoveryScreen(state: EventState,
 
                     }
                 }
-                Card(modifier = Modifier
-                    .size(50.dp), colors = CardDefaults.cardColors(containerColor = redColor, contentColor = Color.White),
-                    shape = CircleShape, elevation = CardDefaults.cardElevation(
+                Card(
+                    modifier = Modifier
+                        .size(50.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = redColor,
+                        contentColor = Color.White
+                    ),
+                    shape = CircleShape,
+                    elevation = CardDefaults.cardElevation(
                         defaultElevation = 10.dp
-                    )){
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                    )
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(text = "K", fontWeight = FontWeight.Bold)
                     }
 
                 }
-                for(deviceInfo in state.deviceInfoList)
-                {
-                    deviceInfoItem(screenTotalHeightInPixels = screenTotalHeightInPixels, screenTotalWidthInPixels = screenTotalWidthInPixels, deviceConnectionInfo =  deviceInfo,onEventAction)
+                for (deviceInfo in state.deviceInfoList) {
+                    deviceInfoItem(
+                        screenTotalHeightInPixels = screenTotalHeightInPixels,
+                        screenTotalWidthInPixels = screenTotalWidthInPixels,
+                        deviceConnectionInfo = deviceInfo,
+                        onEventAction
+                    )
                 }
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
                     IconButton(modifier = Modifier
                         .padding(20.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(10))
-                        .background(redColor)
-                        ,onClick = {
-                            onEventAction(EventAction.OnModeChange(Mode.OFF))
-                            onDismiss.invoke()
-                        }) {
+                        .background(redColor), onClick = {
+                        onEventAction(EventAction.OnModeChange(Mode.OFF))
+                        onDismiss.invoke()
+                    }) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "Stop Discover",
@@ -165,33 +166,43 @@ fun DiscoveryScreen(state: EventState,
 }
 
 @Composable
-fun deviceInfoItem(screenTotalHeightInPixels: Float, screenTotalWidthInPixels:Float, deviceConnectionInfo: DeviceConnectionInfo, onEventAction: (EventAction) -> Unit)
-{
+fun deviceInfoItem(
+    screenTotalHeightInPixels: Float,
+    screenTotalWidthInPixels: Float,
+    deviceConnectionInfo: DeviceConnectionInfo,
+    onEventAction: (EventAction) -> Unit,
+) {
 
     val pinNotZero = remember {
         mutableStateOf(false)
     }
     pinNotZero.value = deviceConnectionInfo.pin == 0
 
-    val bubbleRadius: Float by animateFloatAsState(if (pinNotZero.value) 50f else 100f, animationSpec = spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessVeryLow
-    ))
+    val bubbleRadius: Float by animateFloatAsState(
+        if (pinNotZero.value) 50f else 100f, animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessVeryLow
+        )
+    )
 
-    val bubbleRoundPercentage: Float by animateFloatAsState(if (pinNotZero.value) 50f else 15f, animationSpec = spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessVeryLow,
+    val bubbleRoundPercentage: Float by animateFloatAsState(
+        if (pinNotZero.value) 50f else 15f, animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessVeryLow,
 
-    ))
-    val bubbleRoundAngle: Float by animateFloatAsState(if (pinNotZero.value) 90f else 0f, animationSpec = spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessVeryLow
-    ))
+            )
+    )
+    val bubbleRoundAngle: Float by animateFloatAsState(
+        if (pinNotZero.value) 90f else 0f, animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessVeryLow
+        )
+    )
     val x = remember {
-        MediaUtils.getRandomPositions(screenTotalWidthInPixels-80)
+        MediaUtils.getRandomPositions(screenTotalWidthInPixels - 80)
     }
     val y = remember {
-        MediaUtils.getRandomPositions(screenTotalHeightInPixels-80)
+        MediaUtils.getRandomPositions(screenTotalHeightInPixels - 80)
     }
     var offsetX by remember { mutableFloatStateOf(x) }
     var offsetY by remember { mutableFloatStateOf(y) }
@@ -214,7 +225,7 @@ fun deviceInfoItem(screenTotalHeightInPixels: Float, screenTotalWidthInPixels:Fl
                 .clip(RoundedCornerShape(bubbleRoundPercentage.toInt()))
                 .border(
                     width = 5.dp,
-                    color = if(deviceConnectionInfo.status == ConnectionStatus.NOT_CONNECTED) redColor else greenColor,
+                    color = if (deviceConnectionInfo.status == ConnectionStatus.NOT_CONNECTED) redColor else greenColor,
                     shape = RoundedCornerShape(bubbleRoundPercentage.toInt())
                 )
                 .clickable(indication = null,
@@ -229,20 +240,31 @@ fun deviceInfoItem(screenTotalHeightInPixels: Float, screenTotalWidthInPixels:Fl
             )
 
         ) {
-           Box(modifier = Modifier
-               .fillMaxSize()
-               .background(if(deviceConnectionInfo.status == ConnectionStatus.NOT_CONNECTED) redColor else greenColor), contentAlignment = Alignment.Center){
-               Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
-                   Text(modifier = Modifier.rotate(360-bubbleRoundAngle), color = Color.White,text = deviceConnectionInfo.endpointName.toString()[0].toString(), fontWeight = FontWeight.Bold)
-                   AnimatedVisibility(visible = !pinNotZero.value) {
-                       Text(
-                           modifier = Modifier.rotate(360 - bubbleRoundAngle),
-                           color = Color.White,
-                           text = "PIN: ${deviceConnectionInfo.pin}",
-                           fontWeight = FontWeight.Bold
-                       )
-                   }
-               }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(if (deviceConnectionInfo.status == ConnectionStatus.NOT_CONNECTED) redColor else greenColor),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(
+                        modifier = Modifier.rotate(360 - bubbleRoundAngle),
+                        color = Color.White,
+                        text = deviceConnectionInfo.endpointName.toString()[0].toString(),
+                        fontWeight = FontWeight.Bold
+                    )
+                    AnimatedVisibility(visible = !pinNotZero.value) {
+                        Text(
+                            modifier = Modifier.rotate(360 - bubbleRoundAngle),
+                            color = Color.White,
+                            text = "PIN: ${deviceConnectionInfo.pin}",
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
 
         }

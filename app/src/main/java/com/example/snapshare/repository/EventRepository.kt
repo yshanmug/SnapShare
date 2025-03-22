@@ -62,7 +62,7 @@ class EventRepository @Inject constructor(private val eventDao: EventDao) {
 
     suspend fun freshAllImagesFromDirectory(eventTitle: String): List<File> = withContext(
         Dispatchers.IO
-    ) { // Replace with the actual directory path
+    ) {
         val directoryPath =
             "${Environment.getExternalStorageDirectory().path}/SnapShare/${eventTitle}"
         val directory = File(directoryPath)
