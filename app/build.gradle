@@ -6,15 +6,15 @@ plugins {
 }
 
 android {
-    namespace 'com.example.snapshare'
+    namespace 'com.snapshare.app'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.snapshare"
+        applicationId "com.snapshare.app"
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 7
+        versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -24,8 +24,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources = true  // Add this
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk {  // Add this block for native debug symbols
+                debugSymbolLevel 'FULL'
+            }
         }
     }
     compileOptions {
@@ -111,9 +115,4 @@ dependencies {
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
     implementation "androidx.compose.ui:ui-text-google-fonts:1.4.3"
     implementation 'com.google.android.gms:play-services-location:21.0.1'
-
-
-
-
-
 }
