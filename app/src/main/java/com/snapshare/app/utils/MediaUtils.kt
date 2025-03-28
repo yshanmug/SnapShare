@@ -37,6 +37,4 @@ object MediaUtils {
         val random = Random.Default
         return (random.nextDouble(30.toDouble(), totalPixels.toDouble())).toFloat()
     }
-
-
 }
